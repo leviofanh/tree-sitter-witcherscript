@@ -111,3 +111,79 @@ public var dummy: int;
     names: (ident)
     var_type: (type_annot
       type_name: (ident))))
+
+
+===================================================================================================
+Extended wrapMethod annotations
+===================================================================================================
+
+@wrapMethod(CR4PlayerStateCombat)
+function OnEnterState( prevStateName : name )
+{
+	wrappedMethod(prevStateName);
+}
+
+@wrapMethod
+function ShowMeGoods( player: CStoryScenePlayer, merchantTag : CName )
+{
+	wrappedMethod(player, merchantTag);
+}
+
+@wrapMethod(CEntity)
+function I_GetDisplayName() : string
+{
+	return wrappedMethod();
+}
+
+
+---------------------------------------------------------------------------------------------------
+
+(script
+  (func_decl
+    annotation: (annotation
+      name: (annotation_ident)
+      arg: (ident))
+    name: (ident)
+    params: (func_params
+      (func_param_group
+        names: (ident)
+        param_type: (type_annot
+          type_name: (ident))))
+    definition: (func_block
+      (expr_stmt
+        (func_call_expr
+          func: (ident)
+          args: (func_call_args
+            (ident))))))
+  (func_decl
+    annotation: (annotation
+      name: (annotation_ident))
+    name: (ident)
+    params: (func_params
+      (func_param_group
+        names: (ident)
+        param_type: (type_annot
+          type_name: (ident)))
+      (func_param_group
+        names: (ident)
+        param_type: (type_annot
+          type_name: (ident))))
+    definition: (func_block
+      (expr_stmt
+        (func_call_expr
+          func: (ident)
+          args: (func_call_args
+            (ident)
+            (ident))))))
+  (func_decl
+    annotation: (annotation
+      name: (annotation_ident)
+      arg: (ident))
+    name: (ident)
+    params: (func_params)
+    return_type: (type_annot
+      type_name: (ident))
+    definition: (func_block
+      (return_stmt
+        (func_call_expr
+          func: (ident))))))

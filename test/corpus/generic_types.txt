@@ -1,0 +1,125 @@
+===================================================================================================
+Map and set types
+===================================================================================================
+
+class CFoo
+{
+	private var m_data : map<name, name>;
+	var nested : map<int, array<SSkillComboData>>;
+	var spaced : map < int, SSpawnedCharacter >;
+	var unique : set<int>;
+}
+
+---------------------------------------------------------------------------------------------------
+
+(script
+  (class_decl
+    name: (ident)
+    definition: (class_def
+      (member_var_decl
+        specifiers: (specifier)
+        names: (ident)
+        var_type: (type_annot
+          type_name: (ident)
+          type_arg: (type_annot
+            type_name: (ident))
+          type_arg: (type_annot
+            type_name: (ident))))
+      (member_var_decl
+        names: (ident)
+        var_type: (type_annot
+          type_name: (ident)
+          type_arg: (type_annot
+            type_name: (ident))
+          type_arg: (type_annot
+            type_name: (ident)
+            type_arg: (type_annot
+              type_name: (ident)))))
+      (member_var_decl
+        names: (ident)
+        var_type: (type_annot
+          type_name: (ident)
+          type_arg: (type_annot
+            type_name: (ident))
+          type_arg: (type_annot
+            type_name: (ident))))
+      (member_var_decl
+        names: (ident)
+        var_type: (type_annot
+          type_name: (ident)
+          type_arg: (type_annot
+            type_name: (ident)))))))
+
+
+
+===================================================================================================
+Map type in function signature and body
+===================================================================================================
+
+function LoadPreset( optional presetMap : map<int, float> ) : map<int, float>
+{
+	var i : int;
+	for (i = 0; i < presetMap.Size(); i += 1)
+	{
+		presetMap[presetMap.Key(i)] = 0.f;
+	}
+	return presetMap;
+}
+
+---------------------------------------------------------------------------------------------------
+
+(script
+  (func_decl
+    name: (ident)
+    params: (func_params
+      (func_param_group
+        specifiers: (specifier)
+        names: (ident)
+        param_type: (type_annot
+          type_name: (ident)
+          type_arg: (type_annot
+            type_name: (ident))
+          type_arg: (type_annot
+            type_name: (ident)))))
+    return_type: (type_annot
+      type_name: (ident)
+      type_arg: (type_annot
+        type_name: (ident))
+      type_arg: (type_annot
+        type_name: (ident)))
+    definition: (func_block
+      (local_var_decl_stmt
+        names: (ident)
+        var_type: (type_annot
+          type_name: (ident)))
+      (for_stmt
+        init: (assign_op_expr
+          left: (ident)
+          op: (assign_op_direct)
+          right: (literal_int))
+        cond: (binary_op_expr
+          left: (ident)
+          op: (binary_op_lt)
+          right: (func_call_expr
+            func: (member_access_expr
+              accessor: (ident)
+              member: (ident))))
+        iter: (assign_op_expr
+          left: (ident)
+          op: (assign_op_sum)
+          right: (literal_int))
+        body: (func_block
+          (expr_stmt
+            (assign_op_expr
+              left: (array_expr
+                accessor: (ident)
+                index: (func_call_expr
+                  func: (member_access_expr
+                    accessor: (ident)
+                    member: (ident))
+                  args: (func_call_args
+                    (ident))))
+              op: (assign_op_direct)
+              right: (literal_float)))))
+      (return_stmt
+        (ident)))))

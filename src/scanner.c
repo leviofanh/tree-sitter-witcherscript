@@ -179,6 +179,24 @@ static int find_keyword(const char * ident){
     return -1;
 }
 
+// ctype functions are only defined for values representable as unsigned char, lookahead is a unicode code point
+static bool is_ascii(int32_t c) {
+    return c >= 0 && c < 128;
+}
+
+// Besides ASCII whitespace also accept no-break space and BOM, which do appear in vanilla scripts
+static bool is_whitespace(int32_t c) {
+    return (is_ascii(c) && isspace(c)) || c == 0xA0 || c == 0xFEFF;
+}
+
+static bool is_ident_start(int32_t c) {
+    return (is_ascii(c) && isalpha(c)) || c == '_' || c == '@';
+}
+
+static bool is_ident_continue(int32_t c) {
+    return (is_ascii(c) && isalnum(c)) || c == '_';
+}
+
 // Runs the scanner that progressively writes characters into `buffer` if an identifier is detected
 static bool scan_ident(TSLexer *lexer, char* buffer, int buffer_size) {
     if (lexer->eof(lexer)) {
@@ -186,11 +204,11 @@ static bool scan_ident(TSLexer *lexer, char* buffer, int buffer_size) {
     }
 
     // skip leading whitespace
-    while (isspace(lexer->lookahead)) {
+    while (is_whitespace(lexer->lookahead)) {
         lexer->advance(lexer, true);
     }
 
-    if (lexer->eof(lexer) || !(isalpha(lexer->lookahead) || lexer->lookahead == '_' || lexer->lookahead == '@')) {
+    if (lexer->eof(lexer) || !is_ident_start(lexer->lookahead)) {
         return false;
     }
 
@@ -199,7 +217,7 @@ static bool scan_ident(TSLexer *lexer, char* buffer, int buffer_size) {
     lexer->advance(lexer, false);
 
     for (i = 1; i < buffer_size; i++) {
-        if (lexer->eof(lexer) || !(isalnum(lexer->lookahead) || lexer->lookahead == '_')) {
+        if (lexer->eof(lexer) || !is_ident_continue(lexer->lookahead)) {
             break;
         }
         buffer[i] = (char)lexer->lookahead;

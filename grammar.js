@@ -38,7 +38,8 @@ module.exports = grammar({
   name: 'witcherscript',
   
   extras: $ => [
-    /\s/,
+    // no-break space and BOM do appear in vanilla scripts
+    /[\s\u00A0\uFEFF]/,
     $.comment,
   ],
 
@@ -514,11 +515,12 @@ module.exports = grammar({
     
     nop: $ => ';',
 
+    // generic types can take multiple type arguments, e.g. map<K, V>
     type_annot: $ => seq(
       field('type_name', $.ident),
       optional(seq(
         '<',
-        field('type_arg', $.type_annot),
+        comma1(field('type_arg', $.type_annot)),
         '>'
       ))
     ),
